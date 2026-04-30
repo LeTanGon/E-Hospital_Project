@@ -6,58 +6,65 @@ import java.io.*;
 public class HospitalManager {
     private static HospitalManager instance;
     private ArrayList<Patient> patientList;
-    private final String FILE_NAME = "hospital_data.txt";
+    private final String DATA_FILE = "hospital_records.txt";
 
     private HospitalManager() {
         patientList = new ArrayList<>();
         loadFromFile();
     }
 
+    // Singleton Pattern to keep data consistent
     public static HospitalManager getInstance() {
-        if (instance == null) instance = new HospitalManager();
+        if (instance == null) {
+            instance = new HospitalManager();
+        }
         return instance;
     }
 
     public void addPatient(Patient p) {
         patientList.add(p);
-        saveToFile();
+        saveToFile(); // Auto-save every time a patient is added
     }
 
-    public ArrayList<Patient> getPatientList() { return patientList; }
+    public ArrayList<Patient> getPatientList() {
+        return patientList;
+    }
 
-    // --- Applied Math Statistics ---
+    // Applied Math: Calculate Mean Fee
     public double getAverageFee() {
-        if (patientList.isEmpty()) return 0;
-        double sum = 0;
-        for (Patient p : patientList) sum += p.getBaseFee();
-        return sum / patientList.size();
+        if (patientList.isEmpty()) return 0.0;
+        double total = 0;
+        for (Patient p : patientList) {
+            total += p.getBaseFee();
+        }
+        return total / patientList.size();
     }
 
-    // --- File Operations ---
+    // Save data to local text file
     public void saveToFile() {
-        try (PrintWriter pw = new PrintWriter(new FileWriter(FILE_NAME))) {
+        try (PrintWriter pw = new PrintWriter(new FileWriter(DATA_FILE))) {
             for (Patient p : patientList) {
-                // Format: ID, Name, Age, Diagnosis, Fee
                 pw.println(p.getId() + "," + p.getFullName() + "," + p.getAge() + "," + p.getDiagnosis() + "," + p.getBaseFee());
             }
         } catch (IOException e) {
-            System.err.println("Save error: " + e.getMessage());
+            System.err.println("Critical: Could not save data.");
         }
     }
 
+    // Load data when app starts
     public void loadFromFile() {
-        File f = new File(FILE_NAME);
+        File f = new File(DATA_FILE);
         if (!f.exists()) return;
         try (BufferedReader br = new BufferedReader(new FileReader(f))) {
             String line;
             while ((line = br.readLine()) != null) {
-                String[] d = line.split(",");
-                if (d.length >= 5) {
-                    patientList.add(new Patient(d[0], d[1], Integer.parseInt(d[2]), d[3], Double.parseDouble(d[4])));
+                String[] parts = line.split(",");
+                if (parts.length >= 5) {
+                    patientList.add(new Patient(parts[0], parts[1], Integer.parseInt(parts[2]), parts[3], Double.parseDouble(parts[4])));
                 }
             }
         } catch (Exception e) {
-            System.err.println("Load error.");
+            System.err.println("Error loading existing records.");
         }
     }
 }
