@@ -5,11 +5,11 @@ import java.io.*;
 
 public class HospitalManager {
     private static HospitalManager instance;
-    private ArrayList<Patient> patientList;
+    private ArrayList<Patient> patientList = new ArrayList<>();
+    private ArrayList<Doctor> doctorList = new ArrayList<>();
     private final String DATA_FILE = "hospital_records.txt";
 
     private HospitalManager() {
-        patientList = new ArrayList<>();
         loadFromFile();
     }
 
@@ -20,15 +20,20 @@ public class HospitalManager {
         }
         return instance;
     }
-
+    // Patient 
     public void addPatient(Patient p) {
         patientList.add(p);
         saveToFile(); // Auto-save every time a patient is added
     }
-
-    public ArrayList<Patient> getPatientList() {
-        return patientList;
+    //Doctor
+    public void addDoctor(Doctor d) {
+        doctorList.add(d);
+        saveToFile();
     }
+
+    public ArrayList<Patient> getPatientList() { return patientList; }
+    public ArrayList<Doctor> getDoctorList() { return doctorList; }
+    
 
     // Applied Math: Calculate Mean Fee
     public double getAverageFee() {
@@ -46,6 +51,9 @@ public class HospitalManager {
             for (Patient p : patientList) {
                 pw.println(p.getId() + "," + p.getFullName() + "," + p.getAge() + "," + p.getDiagnosis() + "," + p.getBaseFee());
             }
+            for (Doctor d : doctorList) {
+                pw.println("D," + d.getId() + "," + d.getFullName() + "," + d.getAge() );
+            }
         } catch (IOException e) {
             System.err.println("Critical: Could not save data.");
         }
@@ -59,8 +67,11 @@ public class HospitalManager {
             String line;
             while ((line = br.readLine()) != null) {
                 String[] parts = line.split(",");
-                if (parts.length >= 5) {
-                    patientList.add(new Patient(parts[0], parts[1], Integer.parseInt(parts[2]), parts[3], Double.parseDouble(parts[4])));
+                
+                if (parts[0].equals("P")) {
+                    patientList.add(new Patient(parts[1], parts[2], Integer.parseInt(parts[3]), parts[4], Double.parseDouble(parts[5])));
+                } else if (parts[0].equals("D")) {
+                    doctorList.add(new Doctor(parts[1], parts[2], Integer.parseInt(parts[3]), parts[4]));
                 }
             }
         } catch (Exception e) {
