@@ -18,7 +18,7 @@ public class HospitalGUI extends JFrame {
     private JLabel lblAverage;
 
     public HospitalGUI() {
-        setTitle("E-Hospital Pro - Management System");
+        setTitle("E-Hospital - Management System");
         setSize(1000, 700);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLocationRelativeTo(null);
@@ -76,15 +76,10 @@ public class HospitalGUI extends JFrame {
     txtSpec = new JTextField();
     JButton btnAddDoc = new JButton("Add Doctor");
 
-    form.add(new JLabel("ID:"));
-    form.add(txtDocId);
-    form.add(new JLabel("Name:"));
-    form.add(txtDocName);
-
-    form.add(new JLabel("Age:"));
-    form.add(txtDocAge);
-    form.add(new JLabel("Specialty:"));
-    form.add(txtSpec);
+    form.add(new JLabel("ID:")); form.add(txtDocId);
+    form.add(new JLabel("Name:")); form.add(txtDocName);
+    form.add(new JLabel("Age:")); form.add(txtDocAge);
+    form.add(new JLabel("Specialty:"));form.add(txtSpec);
 
     form.add(new JLabel("")); // Spacer
     form.add(new JLabel("")); // Spacer
